@@ -9,7 +9,7 @@
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:tx="http://www.springframework.org/schema/tx" 
 	xmlns:jms="http://www.springframework.org/schema/jms"
-	xsi:schemaLocation="
+		xsi:schemaLocation="
 	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
@@ -24,33 +24,47 @@
 	<context:annotation-config />
 
     <!--******************** Some miscellaneous beans ********************-->
-    <!-- Properties Files 
+    <!-- Properties Files -->
     <bean id="propertyConfigurer" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
         <property name="locations">
             <list>
-                <value>classpath:BitcoinPriceAlert.properties</value>
+                <value>classpath:application.properties</value>
+                <value>classpath:jdbc.properties</value>
             </list>
         </property>
     </bean>
-    -->
     
-    <!-- Enable ${placeholder} substitution -->
-    <context:property-placeholder location="application.properties"/>
+    
+    <!-- Enable ${placeholder} substitution
+    <context:property-placeholder location="application.properties"/> -->
     
 	<task:executor
         id="executorWithPoolSizeRange"
         pool-size="5-25"
         queue-capacity="100"/>
 
-	
 	<task:scheduled-tasks scheduler="myScheduler">
-    	<task:scheduled ref="coindeskBtcPriceWatcher" method="checkBitcoinPrice" fixed-delay="${ckPriceEveryXms}" initial-delay="10000" />
+    	<task:scheduled ref="twentyFourHrBtcPrice" method="monitor" fixed-delay="${TwentyFourHrBtcPrice}" initial-delay="600000" />
+    	<task:scheduled ref="coindeskCurrentBtcPrice" method="monitor" fixed-delay="${coindeskCurrentBtcPrice}" initial-delay="10000" />
 	</task:scheduled-tasks>
 
 	<task:scheduler id="myScheduler" pool-size="10"/>
 	
+	<tx:annotation-driven transaction-manager="transactionManager" />
 	
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
 	
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${jdbc.driverClassName}"/>  
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+
+    <!-- <context:property-placeholder location="jdbc.properties"/> -->
 	
 	
 

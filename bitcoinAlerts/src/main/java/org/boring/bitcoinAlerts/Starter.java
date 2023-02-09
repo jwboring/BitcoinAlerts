@@ -17,7 +17,7 @@ public class Starter {
         System.out.println("Classpath:\n%s" + sysProps.getProperty("java.class.path").replaceAll(";", "\n"));
         
 		appContext = new ClassPathXmlApplicationContext("appContext.xml");
-		appContext.getBean("bitcoinPriceAlert");
+//		appContext.getBean("bitcoinPriceAlert");
 
 	}
 
