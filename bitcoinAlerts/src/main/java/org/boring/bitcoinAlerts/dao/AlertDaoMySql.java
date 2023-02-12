@@ -7,7 +7,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.boring.bitcoinAlerts.domain.Alert;
+import org.boring.bitcoinAlerts.domain.Watcher;
 import org.boring.bitcoinAlerts.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -49,7 +49,7 @@ public class AlertDaoMySql implements AlertDao {
 		String userName = null;
 		String userSmsNum = null;
 		
-		List<Alert> alerts = new ArrayList<Alert>();
+		List<Watcher> alerts = new ArrayList<Watcher>();
 		
 		
 		SqlRowSet srs = jdbcTemplate.queryForRowSet(GETUSERandBYID, id);
@@ -62,7 +62,7 @@ public class AlertDaoMySql implements AlertDao {
 			String alertName = srs.getString("alertName");
 			String url = srs.getString("url");
 			
-			alerts.add(new Alert(alertId, alertName, url));
+			alerts.add(new Watcher(alertId, alertName, url));
 		}
 	    
 		User user = new User(userId, userName, userSmsNum, alerts);

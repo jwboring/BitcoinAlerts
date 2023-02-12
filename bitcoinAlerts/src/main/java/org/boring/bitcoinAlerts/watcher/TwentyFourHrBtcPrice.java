@@ -1,11 +1,12 @@
 package org.boring.bitcoinAlerts.watcher;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.boring.bitcoinAlerts.domain.Price;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.boring.bitcoinAlerts.domain.Alert;
+import org.boring.bitcoinAlerts.smsSender.BtcNetworkMetricListener;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -17,29 +18,32 @@ import jakarta.ws.rs.core.Response;
 @Component(value="twentyFourHrBtcPrice")
 @Scope (value="singleton")
 public class TwentyFourHrBtcPrice {
+	private static final Logger log = LogManager.getLogger(TwentyFourHrBtcPrice.class);
 	
 	private static final String url = "https://blockchain.info/q/24hrprice";
 	private Client client = ClientBuilder.newClient();
-	private boolean firstTime = true; 
-	private List<Price> pricesToWatch;
 	
+	private final String twentyFourHrBtcPrice = "24 hour weighted price from the largest exchanges: @price";
 	
+	private List<BtcNetworkMetricListener> listeners = new ArrayList<BtcNetworkMetricListener>();
 	
 	
 	public TwentyFourHrBtcPrice() {
 		super();
 	}
 
-
+	public void addListener(BtcNetworkMetricListener toAdd) {
+        listeners.add(toAdd);
+    }
 	
 	synchronized public void monitor() {
 		
 		Response response = getResponse();
 		int status = response.getStatus();
 		if (status==200) {
-			System.out.println("headers: " + response.getHeaders());
+//			log.debug("headers: " + response.getHeaders());
 			float curentPrice = response.readEntity(float.class);
-			System.out.printf("current price = %f",curentPrice);
+			log.debug("TwentyFourHrBtcPrice = {}",curentPrice);
 			priceChange(curentPrice);
 		}
 		
@@ -58,70 +62,14 @@ public class TwentyFourHrBtcPrice {
 	
 	public void priceChange(float priceChange) {
 		
-//		String emailMsg = " | Current price = " + currentPrice + "\n";
-//		System.out.println(DT_FORMAT.format(ZonedDateTime.now()) + emailMsg);
 		
-		if (firstTime) {
-			firstTime = false;
-			adjustWatchlist(priceChange);
+		String message = twentyFourHrBtcPrice.replaceFirst("@price", Float.valueOf(priceChange).toString());
+		
+		for (BtcNetworkMetricListener priceChangeListener : listeners) {
+			priceChangeListener.alert(new Alert(1, message));
 		}
-		else {
-			// we check if one price is reached
-			for (Iterator<Price> it = pricesToWatch.iterator(); it.hasNext();) {
-				Price priceToWatch = it.next();
-	
-				if (priceToWatch.type.reached(priceChange, priceToWatch.target)) {
-					String message = priceToWatch.type.msg(priceChange, priceToWatch.target);
-					System.out.printf("Bitcoin Watcher %s", message);
-	//				displayNotification("Bitcoin Watcher", message);
-					it.remove(); // remove from list to watch
-					adjustWatchlist(priceChange);
-				}
-			}
-		}
+		System.out.println(message);
 	}
 	
-	private void adjustWatchlist(float theCurrent) {
-		System.out.println(theCurrent);
-		pricesToWatch = new ArrayList<Price>(4);
-		float d;
-		Price down1;
-		float u;
-		Price up1;
-		
-		d=Math.round( theCurrent * .95  );
-		down1 = new Price(theCurrent, d);
-		pricesToWatch.add(down1);
-		
-		u=Math.round( theCurrent * 1.05  );
-		up1 = new Price(theCurrent, u);
-		pricesToWatch.add(up1);
-		
-		
-//		/** Down 1000, rounded to 1000 */
-//		d = Math.round((theCurrent - 1000)/1000)*1000;
-//		down1 = new Price(theCurrent, d);
-//		pricesToWatch.add(down1);
-//		
-//		/** Down 500, rounded to 100 */
-//		d = Math.round((theCurrent - 500)/100)*100;
-//		down1 = new Price(theCurrent, d);
-//		pricesToWatch.add(down1);
-//		
-//		
-//		/** up 1000, rounded to 1000 */
-//		u = Math.round((theCurrent + 1000)/1000)*1000;
-//		up1 = new Price(theCurrent, u);
-//		pricesToWatch.add(up1);
-//		
-//		/** up 500, rounded to 100 */
-//		u = Math.round((theCurrent + 500)/100)*100;
-//		up1 = new Price(theCurrent, u);
-//		pricesToWatch.add(up1);
-		
-		System.out.println("size="+pricesToWatch.size());
-		System.out.println(pricesToWatch.stream().collect(Collectors.toList()).toString());
-		
-	}
 	
 }

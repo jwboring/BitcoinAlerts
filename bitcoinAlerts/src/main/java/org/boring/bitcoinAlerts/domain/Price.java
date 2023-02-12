@@ -1,15 +1,19 @@
 package org.boring.bitcoinAlerts.domain;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 //@Component(value="price")
 //@Scope (value="singleton")
 public class Price {
+	private static final Logger log = LogManager.getLogger(Price.class);
 	
 	public float target;
-	public AmountMovementTyoe type;
+	public AmountMovementType type;
 
 	public Price(float current, float target) {
 		this.target = target;
-		type = Float.compare(current, target) < 0 ? AmountMovementTyoe.UP : AmountMovementTyoe.DOWN;
+		type = Float.compare(current, target) < 0 ? AmountMovementType.UP : AmountMovementType.DOWN;
 	}
 
 	@Override

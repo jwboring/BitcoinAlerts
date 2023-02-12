@@ -23,5 +23,33 @@ public class User {
 	@NonNull private String name;
 	private String smsNum;
 
-	@NonNull private List<Alert> alerts = new ArrayList<Alert>();
+	@NonNull private List<Watcher> alerts = new ArrayList<Watcher>();
+	
+	// pa 2023026064
+	// Shawn 8433436587
+	private String[] userPhoneNumbers = new String[] {"8632559777", "8636481586"};
+	
+	
+	
+	public User(@NonNull int id, @NonNull String name, String smsNum, @NonNull List<Watcher> alerts) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.smsNum = smsNum;
+		this.alerts = alerts;
+	}
+	
+	
+
+	public String[] getUserPhoneNumbers() {
+		return userPhoneNumbers;
+	}
+
+
+
+
+
+
+
+	
 }

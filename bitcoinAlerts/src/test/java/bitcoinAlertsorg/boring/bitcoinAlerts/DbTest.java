@@ -1,5 +1,8 @@
 package bitcoinAlertsorg.boring.bitcoinAlerts;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.boring.bitcoinAlerts.dao.AlertDaoMySql;
 import org.boring.bitcoinAlerts.domain.User;
 import org.boring.bitcoinAlerts.watcher.CoindeskCurrentBtcPrice;
@@ -43,9 +46,24 @@ class DbTest {
 		System.out.println(user);
 	}
 	
-	@Test
+//	@Test
 	void test2() {
 		coindeskCurrentBtcPrice.monitor();
+	}
+	
+	
+	
+	
+	@Test
+	void test3() {
+		String coindeskMessage = "Coindesk Current Price ALERT :BTC @target with price : @price on @now.";
+		Map<String,String> xx = new HashMap<>();
+		xx.put("@now", "02/11/2023 at 01:21 PM EST");
+		xx.put("@target", "has risen beyond 22715.0");
+		xx.put("@price", "21715.84");
+		
+		String result = coindeskMessage.replaceFirst("@target",xx.get("@target")).replaceFirst("@price", xx.get("@price")).replaceFirst("@now", xx.get("@now"));
+		System.out.println(result);
 	}
 
 }

@@ -44,8 +44,8 @@
         queue-capacity="100"/>
 
 	<task:scheduled-tasks scheduler="myScheduler">
-    	<task:scheduled ref="twentyFourHrBtcPrice" method="monitor" fixed-delay="${TwentyFourHrBtcPrice}" initial-delay="600000" />
-    	<task:scheduled ref="coindeskCurrentBtcPrice" method="monitor" fixed-delay="${coindeskCurrentBtcPrice}" initial-delay="10000" />
+    	<task:scheduled ref="twentyFourHrBtcPrice" method="monitor" fixed-delay="${TwentyFourHrBtcPrice}" initial-delay="5000" />
+    	<task:scheduled ref="coindeskCurrentBtcPrice" method="monitor" fixed-delay="${coindeskCurrentBtcPrice}" initial-delay="15000" />
 	</task:scheduled-tasks>
 
 	<task:scheduler id="myScheduler" pool-size="10"/>
