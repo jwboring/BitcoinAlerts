@@ -45,6 +45,7 @@
 
 	<task:scheduled-tasks scheduler="myScheduler">
     	<task:scheduled ref="twentyFourHrBtcPrice" method="monitor" fixed-delay="${TwentyFourHrBtcPrice}" initial-delay="5000" />
+    	<task:scheduled ref="twentyFourHrXacCount" method="monitor" fixed-delay="${TwentyFourHrBtcPrice}" initial-delay="5000" />
     	<task:scheduled ref="coindeskCurrentBtcPrice" method="monitor" fixed-delay="${coindeskCurrentBtcPrice}" initial-delay="15000" />
 	</task:scheduled-tasks>
 

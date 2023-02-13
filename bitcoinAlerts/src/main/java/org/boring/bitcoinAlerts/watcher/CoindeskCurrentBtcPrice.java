@@ -1,9 +1,6 @@
 package org.boring.bitcoinAlerts.watcher;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
@@ -15,32 +12,18 @@ import org.json.JSONObject;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import jakarta.ws.rs.client.Client;
-import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @Component(value="coindeskCurrentBtcPrice")
 @Scope (value="singleton")
-public class CoindeskCurrentBtcPrice  {
+public class CoindeskCurrentBtcPrice extends AbstractWatcherService  {
 	private static final Logger log = LogManager.getLogger(CoindeskCurrentBtcPrice.class);
 	
 	
-	
-	private List<BtcNetworkMetricListener> listeners = new ArrayList<BtcNetworkMetricListener>();
-	
-	public void addListener(BtcNetworkMetricListener toAdd) {
-        listeners.add(toAdd);
-    }
-	
 	private final String coindeskMessage = "Coindesk Current Price ALERT :BTC @target with price : @price on @now.";
-	
-	
 	private static final String url = "https://api.coindesk.com/v1/bpi/currentprice.json";
-	private Client client = ClientBuilder.newClient();
-	private boolean firstTime = true; 
-	private List<Price> pricesToWatch = new CopyOnWriteArrayList<Price>();
-	private float currentPrice;
+	
 	
 	
 	public CoindeskCurrentBtcPrice() {
@@ -48,19 +31,6 @@ public class CoindeskCurrentBtcPrice  {
 	}
 	
 	
-	public List<Price> getPricesToWatch() {
-		return pricesToWatch;
-	}
-
-	synchronized public float getCurrentPrice() {
-		return currentPrice;
-	}
-
-
-
-
-
-
 	synchronized public void monitor() {
 		
 		Response response = getResponse();
@@ -68,8 +38,6 @@ public class CoindeskCurrentBtcPrice  {
 		log.debug("status = {}",status);
 		
 		if (status==200) {
-//			log.debug("headers: " + response.getHeaders());
-			
 			String json = response.readEntity(String.class);
 			JSONObject jsonObject = new JSONObject(json);
 			this.currentPrice = jsonObject.getJSONObject("bpi").getJSONObject("USD").getFloat("rate_float");
@@ -89,9 +57,6 @@ public class CoindeskCurrentBtcPrice  {
 	}
 	
 
-	
-	
-	
 	private void priceChange(float priceChange) {
 		
 //		String emailMsg = " | Current price = " + currentPrice + "\n";
@@ -141,11 +106,11 @@ public class CoindeskCurrentBtcPrice  {
 		float u;
 		Price up1;
 		
-		d=Math.round( theCurrent * .98  );
+		d=Math.round( theCurrent * .95  );
 		down1 = new Price(theCurrent, d);
 		pricesToWatch.add(down1);
 		
-		u=Math.round( theCurrent * 1.02  );
+		u=Math.round( theCurrent * 1.05  );
 		up1 = new Price(theCurrent, u);
 		pricesToWatch.add(up1);
 		

@@ -18,6 +18,7 @@ import org.boring.bitcoinAlerts.domain.Alert;
 import org.boring.bitcoinAlerts.domain.User;
 import org.boring.bitcoinAlerts.watcher.CoindeskCurrentBtcPrice;
 import org.boring.bitcoinAlerts.watcher.TwentyFourHrBtcPrice;
+import org.boring.bitcoinAlerts.watcher.TwentyFourHrXacCount;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.properties.EncryptableProperties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,7 @@ public class VerizonSender implements BtcNetworkMetricListener {
 	
 	@Autowired private CoindeskCurrentBtcPrice coindeskCurrentBtcPrice;
 	@Autowired private TwentyFourHrBtcPrice twentyFourHrBtcPrice;
+	@Autowired private TwentyFourHrXacCount twentyFourHrXacCount;
 	
 	
 	private Properties mailProperties = new Properties();
@@ -58,7 +60,7 @@ public class VerizonSender implements BtcNetworkMetricListener {
 	public void init() {
 		coindeskCurrentBtcPrice.addListener(this);
 		twentyFourHrBtcPrice.addListener(this);
-		
+		twentyFourHrXacCount.addListener(this);
 		
 		
 		mailProperties.put("mail.smtp.host", "smtp.gmail.com");
