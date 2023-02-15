@@ -38,10 +38,6 @@ public class VerizonSender implements BtcNetworkMetricListener {
 		log.debug("sent message: {}", alert.getMessage());
 	}
 	
-//	@Autowired private CoindeskCurrentBtcPrice coindeskCurrentBtcPrice;
-//	@Autowired private TwentyFourHrBtcPrice twentyFourHrBtcPrice;
-//	@Autowired private TwentyFourHrXacCount twentyFourHrXacCount;
-	
 	
 	private Properties mailProperties = new Properties();
 	public static final String PROPERTIESFILE = "application.properties";
@@ -56,10 +52,6 @@ public class VerizonSender implements BtcNetworkMetricListener {
 
 	@PostConstruct
 	public void init() {
-//		coindeskCurrentBtcPrice.addListener(this);
-//		twentyFourHrBtcPrice.addListener(this);
-//		twentyFourHrXacCount.addListener(this);
-		
 		
 		mailProperties.put("mail.smtp.host", "smtp.gmail.com");
 		mailProperties.put("mail.smtp.port", "587");
