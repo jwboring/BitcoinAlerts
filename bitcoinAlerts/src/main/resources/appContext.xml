@@ -38,18 +38,19 @@
     <!-- Enable ${placeholder} substitution
     <context:property-placeholder location="application.properties"/> -->
     
-	<task:executor
+	 <task:executor
         id="executorWithPoolSizeRange"
         pool-size="5-25"
         queue-capacity="100"/>
+	<task:scheduler id="myScheduler" pool-size="10"/>        
 
-	<task:scheduled-tasks scheduler="myScheduler">
+	<!--<task:scheduled-tasks scheduler="myScheduler">
     	<task:scheduled ref="twentyFourHrBtcPrice" method="monitor" fixed-delay="${TwentyFourHrBtcPrice}" initial-delay="5000" />
     	<task:scheduled ref="twentyFourHrXacCount" method="monitor" fixed-delay="${TwentyFourHrBtcPrice}" initial-delay="5000" />
     	<task:scheduled ref="coindeskCurrentBtcPrice" method="monitor" fixed-delay="${coindeskCurrentBtcPrice}" initial-delay="15000" />
-	</task:scheduled-tasks>
+	</task:scheduled-tasks> -->
 
-	<task:scheduler id="myScheduler" pool-size="10"/>
+	
 	
 	<tx:annotation-driven transaction-manager="transactionManager" />
 	

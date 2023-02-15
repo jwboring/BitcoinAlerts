@@ -32,5 +32,4 @@ public abstract class AbstractWatcherService implements WatcherService  {
 		return pricesToWatch;
 	}
 	
-	abstract public void monitor();
 }

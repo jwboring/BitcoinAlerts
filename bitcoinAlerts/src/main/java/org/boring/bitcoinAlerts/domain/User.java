@@ -23,7 +23,7 @@ public class User {
 	@NonNull private String name;
 	private String smsNum;
 
-	@NonNull private List<Watcher> alerts = new ArrayList<Watcher>();
+	@NonNull private List<Watch> watches = new ArrayList<Watch>();
 	
 	// pa 2023026064
 	// Shawn 8433436587
@@ -31,12 +31,12 @@ public class User {
 	
 	
 	
-	public User(@NonNull int id, @NonNull String name, String smsNum, @NonNull List<Watcher> alerts) {
+	public User(@NonNull int id, @NonNull String name, String smsNum, @NonNull List<Watch> watches) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.smsNum = smsNum;
-		this.alerts = alerts;
+		this.watches = watches;
 	}
 	
 	

@@ -1,10 +1,11 @@
 package bitcoinAlertsorg.boring.bitcoinAlerts;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.boring.bitcoinAlerts.dao.AlertDaoMySql;
-import org.boring.bitcoinAlerts.domain.User;
+import org.boring.bitcoinAlerts.dao.WatchDaoMySql;
+import org.boring.bitcoinAlerts.domain.Watch;
 import org.boring.bitcoinAlerts.watcher.CoindeskCurrentBtcPrice;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -17,14 +18,14 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 class DbTest {
 	
 	private static ApplicationContext appContext;
-	private static AlertDaoMySql alertDaoMySql;
+	private static WatchDaoMySql watchDaoMySql;
 	private static CoindeskCurrentBtcPrice coindeskCurrentBtcPrice;
 
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
 		
 		appContext = new ClassPathXmlApplicationContext("appContext.xml");
-		alertDaoMySql = (AlertDaoMySql)appContext.getBean("alertDaoMySql");
+		watchDaoMySql = (WatchDaoMySql)appContext.getBean("watchDaoMySql");
 		coindeskCurrentBtcPrice = appContext.getBean("coindeskCurrentBtcPrice",CoindeskCurrentBtcPrice.class);
 	}
 
@@ -40,10 +41,10 @@ class DbTest {
 	void tearDown() throws Exception {
 	}
 
-//	@Test
+	@Test
 	void test1() {
-		User user = alertDaoMySql.getUserAndById(1);
-		System.out.println(user);
+		List<Watch> watches = watchDaoMySql.getAllWatches();
+		System.out.println();
 	}
 	
 //	@Test
@@ -54,7 +55,7 @@ class DbTest {
 	
 	
 	
-	@Test
+//	@Test
 	void test3() {
 		String coindeskMessage = "Coindesk Current Price ALERT :BTC @target with price : @price on @now.";
 		Map<String,String> xx = new HashMap<>();

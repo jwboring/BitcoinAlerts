@@ -1,9 +1,13 @@
 package org.boring.bitcoinAlerts.dao;
 
-import org.boring.bitcoinAlerts.domain.User;
+import java.util.List;
 
-public interface AlertDao {
+import org.boring.bitcoinAlerts.domain.User;
+import org.boring.bitcoinAlerts.domain.Watch;
+
+public interface WatchDao {
 	
+	public List<Watch> getAllWatches();
 	
 	public User getUserById(int id);
 	

@@ -8,9 +8,13 @@ import org.boring.bitcoinAlerts.domain.Price;
 import org.boring.bitcoinAlerts.watcher.CoindeskCurrentBtcPrice;
 import org.boring.bitcoinAlerts.watcher.TwentyFourHrBtcPrice;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
+@Scope (value="singleton")
+@Lazy (value = true)
 public class ConsoleScanner {
 	private static final Logger log = LogManager.getLogger(ConsoleScanner.class);
 	

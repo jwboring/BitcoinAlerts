@@ -16,18 +16,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.boring.bitcoinAlerts.domain.Alert;
 import org.boring.bitcoinAlerts.domain.User;
-import org.boring.bitcoinAlerts.watcher.CoindeskCurrentBtcPrice;
-import org.boring.bitcoinAlerts.watcher.TwentyFourHrBtcPrice;
-import org.boring.bitcoinAlerts.watcher.TwentyFourHrXacCount;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.properties.EncryptableProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component(value="verizonSender")
 @Scope (value="singleton")
+@Lazy (value = true)
 public class VerizonSender implements BtcNetworkMetricListener {
 	private static final Logger log = LogManager.getLogger(VerizonSender.class);
 	
@@ -40,9 +38,9 @@ public class VerizonSender implements BtcNetworkMetricListener {
 		log.debug("sent message: {}", alert.getMessage());
 	}
 	
-	@Autowired private CoindeskCurrentBtcPrice coindeskCurrentBtcPrice;
-	@Autowired private TwentyFourHrBtcPrice twentyFourHrBtcPrice;
-	@Autowired private TwentyFourHrXacCount twentyFourHrXacCount;
+//	@Autowired private CoindeskCurrentBtcPrice coindeskCurrentBtcPrice;
+//	@Autowired private TwentyFourHrBtcPrice twentyFourHrBtcPrice;
+//	@Autowired private TwentyFourHrXacCount twentyFourHrXacCount;
 	
 	
 	private Properties mailProperties = new Properties();
@@ -58,9 +56,9 @@ public class VerizonSender implements BtcNetworkMetricListener {
 
 	@PostConstruct
 	public void init() {
-		coindeskCurrentBtcPrice.addListener(this);
-		twentyFourHrBtcPrice.addListener(this);
-		twentyFourHrXacCount.addListener(this);
+//		coindeskCurrentBtcPrice.addListener(this);
+//		twentyFourHrBtcPrice.addListener(this);
+//		twentyFourHrXacCount.addListener(this);
 		
 		
 		mailProperties.put("mail.smtp.host", "smtp.gmail.com");
