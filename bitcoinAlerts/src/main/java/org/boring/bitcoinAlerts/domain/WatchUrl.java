@@ -16,7 +16,7 @@ import lombok.ToString;
 @ToString
 public class WatchUrl {
 	
-	@NonNull private int id;
+	private int id;
 	@NonNull private String watchName;
 	@NonNull private String url;
 }

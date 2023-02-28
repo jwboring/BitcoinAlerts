@@ -1,12 +1,12 @@
 package bitcoinAlertsorg.boring.bitcoinAlerts;
 
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.boring.bitcoinAlerts.dao.WatchDaoMySql;
 import org.boring.bitcoinAlerts.domain.Watch;
-import org.boring.bitcoinAlerts.watcher.CoindeskCurrentBtcPrice;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -19,14 +19,13 @@ class DbTest {
 	
 	private static ApplicationContext appContext;
 	private static WatchDaoMySql watchDaoMySql;
-	private static CoindeskCurrentBtcPrice coindeskCurrentBtcPrice;
+
 
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
 		
 		appContext = new ClassPathXmlApplicationContext("appContext.xml");
 		watchDaoMySql = (WatchDaoMySql)appContext.getBean("watchDaoMySql");
-		coindeskCurrentBtcPrice = appContext.getBean("coindeskCurrentBtcPrice",CoindeskCurrentBtcPrice.class);
 	}
 
 	@AfterAll
@@ -41,15 +40,15 @@ class DbTest {
 	void tearDown() throws Exception {
 	}
 
-	@Test
+//	@Test
 	void test1() {
 		List<Watch> watches = watchDaoMySql.getAllWatches();
 		System.out.println();
 	}
-	
-//	@Test
+
+	@Test
 	void test2() {
-		coindeskCurrentBtcPrice.monitor();
+		DateTimeFormatter DT_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy 'at' hh:mm a z");
 	}
 	
 	

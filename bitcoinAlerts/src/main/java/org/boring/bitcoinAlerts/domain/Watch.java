@@ -19,9 +19,10 @@ import lombok.ToString;
 public class Watch {
 
 	@NonNull private String name;
+	@NonNull private String description;
 	@NonNull private String message;
-	@NonNull private int fixedDelayMilSecs;
-	@NonNull private int initDelaySecs;
-	@NonNull private boolean hasTargets;
+	private int fixedDelayMilSecs;
+	private int initDelaySecs;
+	private boolean hasTargets;
 	@NonNull private List<WatchUrl> urls;
 }

@@ -45,14 +45,17 @@ public class Starter {
 		WatchDao watchDao = appContext.getBean("watchDaoMySql", WatchDao.class);
 		ScheduledJobs scheduledJobs = appContext.getBean("scheduledJobs",ScheduledJobs.class);
 
-		
+		BtcNetworkMetricWatcher addToScanner = null;
+
 		List<Watch> watches = watchDao.getAllWatches();
 		
 		for (Watch watch : watches) {
-			
 			BtcNetworkMetricWatcher btcNetworkMetricWatcher = appContext.getBean("btcNetworkMetricWatcher", BtcNetworkMetricWatcher.class);
+			watchers.add(btcNetworkMetricWatcher);
 			btcNetworkMetricWatcher.setWatchName(watch.getName());
+			btcNetworkMetricWatcher.setWatchDescription(watch.getDescription());
 			btcNetworkMetricWatcher.setMessage(watch.getMessage());
+			btcNetworkMetricWatcher.setHasTargets(watch.isHasTargets());
 			
 			boolean bool = !watch.isHasTargets();
 			btcNetworkMetricWatcher.setSkipAdjustWatchlist(bool);
@@ -62,17 +65,35 @@ public class Starter {
 			if (watch.getUrls().size() > 0) {
 				btcNetworkMetricWatcher.setUrl(watch.getUrls().get(0).getUrl());
 				scheduledJobs.scheduleAtAFixedRate(btcNetworkMetricWatcher, watch.getFixedDelayMilSecs(), watch.getInitDelaySecs());
-				watchers.add(btcNetworkMetricWatcher);
+
 			}
 		}
-		
-		
-		
-		
-		
+
 		ConsoleScanner scanner = appContext.getBean("consoleScanner", ConsoleScanner.class);
+
+		scanner.setWatchers(watchers);
+		scanner.setMyWatcher(watchers.get(0));
+
 		scanner.scanConsole();
 		
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

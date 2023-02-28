@@ -22,10 +22,10 @@ public class WatchDaoMySql implements WatchDao {
 	private JdbcTemplate jdbcTemplate;
 	
 	
-	private String GETUSERBYID = "select *  from user u where u.id= :id ";
+	private static final String GETUSERBYID = "select *  from user u where u.id= :id ";
 	
-	private String GETALLWATCHES = "select name, hasTargets, message, fixedDelayMilSecs, initDelaySecs from watch w ";
-	private String GETALLURLSFORWATCHES = "select id, watchName, url from watchurl wu where watchName = ? ";
+	private static final String GETALLWATCHES = "select name, description, hasTargets, message, fixedDelayMilSecs, initDelaySecs from watch w ";
+	private static final String GETALLURLSFORWATCHES = "select id, watchName, url from watchurl wu where watchName = ? ";
 	
 
 	@Autowired

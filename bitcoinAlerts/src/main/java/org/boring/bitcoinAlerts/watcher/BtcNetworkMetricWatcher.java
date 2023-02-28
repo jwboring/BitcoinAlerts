@@ -1,11 +1,16 @@
 package org.boring.bitcoinAlerts.watcher;
 
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.boring.bitcoinAlerts.domain.Alert;
+import org.boring.bitcoinAlerts.domain.BtcMetrics;
 import org.boring.bitcoinAlerts.domain.Price;
 import org.boring.bitcoinAlerts.smsSender.BtcNetworkMetricListener;
 import org.json.JSONObject;
@@ -23,13 +28,16 @@ public class BtcNetworkMetricWatcher extends AbstractWatcherService implements R
 	private static final Logger log = LogManager.getLogger(BtcNetworkMetricWatcher.class);
 	
 	private String watchName;
-	private String message = "***BtcNetworkMetricWatcher*** :BTC @target with price : @price on @now.";
-	private String url = "https://api.coindesk.com/v1/bpi/currentprice.json";
+	private String watchDescription;
+	private boolean isHasTargets;
+	private String message;
+	private String url;
 	private boolean skipAdjustWatchlist = false;
+	private BtcMetrics btcMetrics;
 	
-	
-	public BtcNetworkMetricWatcher() {
+	public BtcNetworkMetricWatcher(BtcMetrics btcMetrics) {
 		super();
+		this.btcMetrics = btcMetrics;
 	}
 	
 	@Override
@@ -49,11 +57,9 @@ public class BtcNetworkMetricWatcher extends AbstractWatcherService implements R
 			else {
 				this.currentPrice = Float.valueOf(json);
 			}
-			System.out.printf(watchName + " = %f", currentPrice);
-			log.debug("{} = {}",watchName, currentPrice);
-			System.out.println(System.getProperty("line.separator"));
-			priceChange(currentPrice);
-			
+			btcMetrics.setBtcMetric(watchName, this.currentPrice);
+			log.debug("{} = {}",watchName, this.currentPrice);
+			priceChange(this.currentPrice);
 		}
 		
 	}
@@ -67,10 +73,8 @@ public class BtcNetworkMetricWatcher extends AbstractWatcherService implements R
 	
 
 	private void priceChange(float priceChange) {
-		
-//		String emailMsg = " | Current price = " + currentPrice + "\n";
-//		log.debug(DT_FORMAT.format(ZonedDateTime.now()) + emailMsg);
-		
+		boolean removed=false;
+
 		if (firstTime) {
 			firstTime = false;
 			adjustWatchlist(priceChange);
@@ -78,33 +82,51 @@ public class BtcNetworkMetricWatcher extends AbstractWatcherService implements R
 		else {
 			// we check if one price is reached
 			
-			int count=0;
-			
-			for (Price priceToWatch : pricesToWatch) {
-				count++;
-				log.debug("priceToWatch ={}.  count={}", priceToWatch, count);
-				
-			
-				if (priceToWatch.type.reached(priceChange, priceToWatch.target)) {
-					log.debug("reached target {} current price={}", priceToWatch, priceChange);
-					pricesToWatch.remove(priceToWatch);
-					
-					Map<String, String> map = priceToWatch.type.msg(priceChange, priceToWatch.target);
-					String myMessage = this.message.replaceFirst("@target",map.get("@target")).replaceFirst("@price", map.get("@price")).replaceFirst("@now", map.get("@now"));
-					
-					System.out.println(myMessage);
-					
+			boolean didRemoveAPrice = false;
+
+			for (Iterator<Price> it = pricesToWatch.iterator(); it.hasNext();) {
+
+				Price nextPrice = (Price) it.next();
+				if (nextPrice.type.reached(priceChange, nextPrice.target)) {
+					log.debug("{} size before={}",watchName, pricesToWatch.size());
+					log.debug("{} reached target {} current price={}",watchName, nextPrice, priceChange);
+
+					Map<String, String> map = nextPrice.type.msg(priceChange, nextPrice.target);
+					String myMessage = completeMessage(map);
+
 					for (BtcNetworkMetricListener priceChangeListener : listeners) {
 						priceChangeListener.alert(new Alert(1, myMessage));
 					}
-					
-					adjustWatchlist(priceChange);
+					it.remove();
+					didRemoveAPrice = true;
 				}
 			}
+			if (didRemoveAPrice)
+				adjustWatchlist(priceChange);
+			log.debug("{} size after={}",watchName, pricesToWatch.size());
 		}
 	}
 	
-	
+
+	private String completeMessage(Map<String, String> map){
+
+		StringBuffer msg = new StringBuffer();
+		msg.append(watchDescription);
+		msg.append(" ");
+		msg.append(this.message);
+		String newMsg = msg.toString();
+		if (this.message.contains("@target"))
+			newMsg = newMsg.replaceFirst("@target",map.get("@target"));
+		if (this.message.contains("@amount"))
+			newMsg = newMsg.replaceFirst("@amount",map.get("@amount"));
+		if (this.message.contains("@now"))
+			newMsg = newMsg.replaceFirst("@now", map.get("@now"));
+
+		return newMsg;
+	}
+
+
+
 	
 	
 	public void adjustWatchlist(float theCurrent) {
@@ -112,7 +134,8 @@ public class BtcNetworkMetricWatcher extends AbstractWatcherService implements R
 		if (!skipAdjustWatchlist) {
 		
 			log.debug(theCurrent);
-			
+			pricesToWatch = new ArrayList<Price>();
+
 			float d;
 			Price down1;
 			float u;
@@ -126,8 +149,8 @@ public class BtcNetworkMetricWatcher extends AbstractWatcherService implements R
 			up1 = new Price(theCurrent, u);
 			pricesToWatch.add(up1);
 			
-			log.debug("size="+pricesToWatch.size());
-			log.debug(pricesToWatch.stream().collect(Collectors.toList()).toString());
+			log.debug("{} Prices to watch size={}. Targets: {}",watchName, pricesToWatch.size(), pricesToWatch.stream().collect(Collectors.toList()).toString());
+			//log.debug(pricesToWatch.stream().collect(Collectors.toList()).toString());
 		}
 		
 	}
@@ -161,8 +184,15 @@ public class BtcNetworkMetricWatcher extends AbstractWatcherService implements R
 		this.watchName = watchName;
 	}
 
-	
-	
-	
-	
+	public void setWatchDescription(String description) {
+		this.watchDescription = description;
+	}
+
+	public void setHasTargets(boolean hasTargets) {	isHasTargets = hasTargets;	}
+
+
+
+	public boolean isHasTargets() {
+		return isHasTargets;
+	}
 }

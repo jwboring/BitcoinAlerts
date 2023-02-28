@@ -15,10 +15,10 @@ public abstract class AbstractWatcherService implements WatcherService  {
 	
 	protected Client client = ClientBuilder.newClient();
 	protected boolean firstTime = true; 
-	protected List<Price> pricesToWatch = new CopyOnWriteArrayList<Price>();
+	protected List<Price> pricesToWatch = new ArrayList<Price>();  //CopyOnWriteArrayList<Price>();
 	protected float currentPrice;
 	protected List<BtcNetworkMetricListener> listeners = new ArrayList<BtcNetworkMetricListener>();
-	protected float getCurrentPrice() {
+	public float getCurrentPrice() {
 		return currentPrice;
 	}
 	

@@ -27,9 +27,9 @@ public enum AmountMovementType {
 			log.debug("UP");
 			String now = DT_FORMAT.format(ZonedDateTime.now());
 			Map<String, String> xx = new HashMap<>();
-			xx.put("now", now);
-			xx.put("target", "has risen beyond ".concat(Float.valueOf(target).toString()));
-			xx.put("price", Float.valueOf(current).toString());
+			xx.put("@now", now);
+			xx.put("@target", "has risen beyond ".concat(Float.valueOf(target).toString()));
+			xx.put("@amount", Float.valueOf(current).toString());
 			return xx;
 		}
 	},
@@ -46,13 +46,13 @@ public enum AmountMovementType {
 			Map<String, String> xx = new HashMap<>();
 			xx.put("@now", now);
 			xx.put("@target", "has fallen below ".concat(Float.valueOf(target).toString()));
-			xx.put("@price", Float.valueOf(current).toString());
+			xx.put("@amount", Float.valueOf(current).toString());
 			return xx;
 		}
 	};
 	
 	private static final Logger log = LogManager.getLogger(AmountMovementType.class);
-	public DateTimeFormatter DT_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy 'at' hh:mm a z");
+	public DateTimeFormatter DT_FORMAT = DateTimeFormatter.ofPattern("hh:mma.z MM/dd/yy");
 	
 	public abstract boolean reached(float current, float target);
 

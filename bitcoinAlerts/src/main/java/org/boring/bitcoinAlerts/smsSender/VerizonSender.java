@@ -102,14 +102,11 @@ public class VerizonSender implements BtcNetworkMetricListener {
 	}
 	
 	private void transportSend(Message message) throws MessagingException {
-		Transport.send(message);
-		
-//		if (!isMsgSenderDisabled) {
-//			Transport.send(message);
-//		}
-//		else
-//			System.out.println("not sent, message sender is disabled");
-			
+		if (!isMsgSenderDisabled) {
+			Transport.send(message);
+		}
+		else
+			System.out.println("not sent, message sender is disabled");
 	}
 
 

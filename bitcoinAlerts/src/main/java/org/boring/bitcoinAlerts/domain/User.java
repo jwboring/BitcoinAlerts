@@ -19,7 +19,7 @@ import lombok.ToString;
 @ToString
 public class User {
 	
-	@NonNull private int id;
+	private int id;
 	@NonNull private String name;
 	private String smsNum;
 
@@ -31,7 +31,7 @@ public class User {
 	
 	
 	
-	public User(@NonNull int id, @NonNull String name, String smsNum, @NonNull List<Watch> watches) {
+	public User(int id, @NonNull String name, String smsNum, @NonNull List<Watch> watches) {
 		super();
 		this.id = id;
 		this.name = name;
