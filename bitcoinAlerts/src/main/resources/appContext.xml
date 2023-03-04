@@ -1,21 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans default-lazy-init="true"
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-	   xmlns="http://www.springframework.org/schema/beans"
-	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xmlns:task="http://www.springframework.org/schema/task"
-	   xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/task
+	   http://www.springframework.org/schema/task/spring-task.xsd">
 
-	   xsi:schemaLocation="
-	   http://www.springframework.org/schema/context
-	   http://www.springframework.org/schema/context/spring-context.xsd
-	   http://www.springframework.org/schema/beans
-	   http://www.springframework.org/schema/beans/spring-beans.xsd
-	   http://www.springframework.org/schema/task
-	   http://www.springframework.org/schema/task/spring-task.xsd
-       http://www.springframework.org/schema/tx
-       http://www.springframework.org/schema/tx/spring-tx.xsd
-">
 
 
 	<context:component-scan base-package="org.boring.bitcoinAlerts" />
@@ -50,12 +43,12 @@
 
 	
 	
-	<!-- <tx:annotation-driven transaction-manager="transactionManager" />-->
+	<!-- <tx:annotation-driven transaction-manager="transactionManager" />
 	
 	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>
-
+-->
 	
 	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="${jdbc.driverClassName}"/>  

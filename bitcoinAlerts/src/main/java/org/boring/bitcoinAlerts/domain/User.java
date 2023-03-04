@@ -27,7 +27,7 @@ public class User {
 	
 	// pa 2023026064
 	// Shawn 8433436587
-	private String[] userPhoneNumbers = new String[] {"8632559777", "8636481586"};
+	private String[] userPhoneNumbers = new String[] {"8632559777@vzwpix.com", "8636481586@vzwpix.com", "4255109921@tmomail.net"};
 	
 	
 	

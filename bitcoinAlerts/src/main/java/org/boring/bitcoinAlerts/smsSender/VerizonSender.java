@@ -91,7 +91,7 @@ public class VerizonSender implements BtcNetworkMetricListener {
 			for(String phone : numbers) {
 				Message message = new MimeMessage(session);
 				message.setFrom(new InternetAddress(mailboxUserEmail));
-				message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(phone+"@vzwpix.com"));
+				message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(phone));
 				message.setSubject(subject);
 				message.setText(text);
 				transportSend(message);
@@ -113,6 +113,7 @@ public class VerizonSender implements BtcNetworkMetricListener {
 }
 // pa 2023026064
 // Shawn 8433436587
+// Amar 4255109921
 
 
 
